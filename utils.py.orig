@@ -1,0 +1,15 @@
+<<<<<<< HEAD
+
+def init():
+    global raw_column_list
+    raw_column_list = []
+    global root_reference
+    # root_reference = 0
+=======
+
+def init():
+    global raw_column_list
+    raw_column_list = []
+    global root_reference
+    # root_reference = 0
+>>>>>>> 1cec86f06597bbf41c20255d02299c537eed3864
