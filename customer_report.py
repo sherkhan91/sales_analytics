@@ -52,6 +52,10 @@ class customer_detail:
 		order_number =  utils.raw_column_list['Order #']
 		customer_email = utils.raw_column_list['Email Address']
 		purchase_date = self.toDateObj(utils.raw_column_list['Order Date and Time Stamp'])
+		customer_country =  utils.raw_column_list['Shipping Country']
+		customer_city = utils.raw_column_list['Shipping City']
+		customer_address = utils.raw_column_list['Shipping Street Address']
+		customer_phone = utils.raw_column_list['Shipping Phone']
 		
 		# print("customer name length: "+str(len(customer_name)))
 		# print("customer order length: "+str(len(order_number)))
@@ -76,7 +80,7 @@ class customer_detail:
 				
 				total = temp_list[2]     # add money to total
 				total = float(total) + float(order_total)
-				all_detail_dict[customer_name[i]] = (customer_name[i], customer_email[i], total, purchase_date[i], m_orders)
+				all_detail_dict[customer_name[i]] = (customer_name[i], customer_email[i], total, purchase_date[i], m_orders, customer_country[i],customer_city[i],customer_address[i],customer_phone[i])
 
 			else:
 				order_total_f = 0
@@ -90,7 +94,7 @@ class customer_detail:
 				order = (order_number[i],order_total_f)
 				orders = []
 				orders.append(order)
-				all_detail_dict[customer_name[i]] = ([customer_name[i], customer_email[i],order_total_f,purchase_date[i], orders])
+				all_detail_dict[customer_name[i]] = ([customer_name[i], customer_email[i],order_total_f,purchase_date[i], orders,customer_country[i],customer_city[i],customer_address[i],customer_phone[i]])
 	
 
 		self.processed_CUSTOMER_DETAIL = all_detail_dict
@@ -143,14 +147,15 @@ class customer_detail:
 		# frame_main.grid(sticky='news')
 		
 		self.frame_for_scroll = tk.Frame(frame_main, bg="#5DADE2", height=300, width=900)
-		self.frame_for_scroll.grid(row=0, column=1, sticky='we')
+		self.frame_for_scroll.grid(row=0, column=1, sticky='nw')
 		self.frame_for_scroll.grid_rowconfigure(1,weight=1)
 		self.frame_for_scroll.grid_columnconfigure(1, weight=1)
 		self.frame_for_scroll.grid_propagate(False)
 
 		
 		self.canvas_for_scroll = tk.Canvas(self.frame_for_scroll, bg="lightgrey")
-		self.canvas_for_scroll.grid(row=1, column=1, sticky="news", padx=165) #ew
+		# self.canvas_for_scroll.grid(row=1, column=1, sticky="news", padx=165) #ew
+		self.canvas_for_scroll.grid(row=1, column=1, sticky="news", padx=5) #ew
 
 		vertical_scrollbar =  tk.Scrollbar(self.frame_for_scroll, orient="vertical", command=self.canvas_for_scroll.yview)
 		vertical_scrollbar.grid(row=1, column=2, sticky='ns')
@@ -176,6 +181,10 @@ class customer_detail:
 		self.email_list = ['a@admin.com','c@cc.com','this@anemail.com']
 		self.totals_list = [99, 100, 200]
 		self.orders_list = [(10,123),(20, 789),(30, 456)]
+		self.country_list = ['Itlay','France','Germany']
+		self.city_list = ['Amsterdam','Den Haag','Rotterdam']
+		self.address_list = ['One Address','Two Address','Three Address']
+		self.phone_list = [123,456,789]
 
 
 		combo_frame = tk.Frame(self.root, width=600, height=100, bg="#5DADE2", highlightbackground="darkblue", highlightcolor="darkblue", highlightthickness=1)
@@ -264,8 +273,8 @@ class customer_detail:
 
 
 
-		label_frame = tk.Frame(self.root, width=600, height=100, bg="#5DADE2", highlightbackground="darkblue", highlightthickness=1)
-		self.mainCanvas.create_window((170,210), window=label_frame, anchor='nw') #nw
+		label_frame = tk.Frame(self.root, width=900, height=100, bg="#5DADE2", highlightbackground="darkblue", highlightthickness=1)
+		self.mainCanvas.create_window((10,210), window=label_frame, anchor='nw') #nw
 
 		name_label = tk.Label(label_frame, text="Name")
 		name_label.config(font=("Times 13 bold italic"), fg=("darkblue"), bg=("#5DADE2"))
@@ -282,6 +291,14 @@ class customer_detail:
 		orders_label = tk.Label(label_frame, text="Orders")
 		orders_label.config(font=("Times 13 bold italic"), fg=("darkblue"), bg=("#5DADE2"))
 		orders_label.grid(row=1, column=4, padx=(50,18),pady=0)
+
+		address_label = tk.Label(label_frame, text="Phone")
+		address_label.config(font=("Times 13 bold italic"), fg=("darkblue"), bg=("#5DADE2"))
+		address_label.grid(row=1, column=5, padx=(40,18),pady=0)
+
+		phone_label = tk.Label(label_frame, text="Address")
+		phone_label.config(font=("Times 13 bold italic"), fg=("darkblue"), bg=("#5DADE2"))
+		phone_label.grid(row=1, column=6, padx=(40,60),pady=0)
 		
 		
 
@@ -297,7 +314,7 @@ class customer_detail:
 
 		label_frame.update_idletasks()
 
-		self.entry_frame = tk.Frame(self.canvas_for_scroll, width=600, height=20, bg="#5DADE2")
+		self.entry_frame = tk.Frame(self.canvas_for_scroll, width=900, height=20, bg="#5DADE2")
 		self.canvas_for_scroll.create_window((0,0), window=self.entry_frame, anchor='nw')
 
 		self.showComplete()
@@ -367,11 +384,15 @@ class customer_detail:
 		emails_list = []
 		totalss_list = [] 
 		orderss_list = []
+		country_list = []
+		city_list = []
+		address_list = []
+		phone_list = []
 	
 		complete_list = []
 
 		for key, value in self.processed_CUSTOMER_DETAIL.items():
-			temp_list = [value[0],value[1],value[2],value[4]]
+			temp_list = [value[0],value[1],value[2],value[4],value[5],value[6],value[7],value[8]]
 			complete_list.append(temp_list)
 
 		temp_complete_list= sorted(complete_list, reverse=True, key=lambda x:x[2])	
@@ -381,6 +402,11 @@ class customer_detail:
 			emails_list.append(temp_complete_list[i][1])
 			totalss_list.append(temp_complete_list[i][2])
 			orderss_list.append(temp_complete_list[i][3])
+			country_list.append(temp_complete_list[i][4])
+			city_list.append(temp_complete_list[i][5])
+			address_list.append(temp_complete_list[i][6])
+			phone_list.append(temp_complete_list[i][7])
+
 
 	
 		# self.display_complete(names_list,emails_list,totalss_list,orderss_list)
@@ -390,8 +416,12 @@ class customer_detail:
 		new_list.append(emails_list)
 		new_list.append(totalss_list)
 		new_list.append(orderss_list)
+		new_list.append(country_list)
+		new_list.append(city_list)
+		new_list.append(address_list)
+		new_list.append(phone_list)
 		self.hold_details = new_list
-		self.displayEntries_modified(names_list,emails_list,totalss_list,orderss_list)
+		self.displayEntries_modified(names_list,emails_list,totalss_list,orderss_list,country_list,city_list,address_list,phone_list)
 
 	
 
@@ -401,6 +431,11 @@ class customer_detail:
 		self.email_list.clear()
 		self.totals_list.clear()
 		self.orders_list.clear()
+		self.country_list.clear()
+		self.city_list.clear()
+		self.address_list.clear()
+		self.phone_list.clear()
+
 		my_tempList = []
 		# self.hold_details.clear()
 		
@@ -417,8 +452,12 @@ class customer_detail:
 		self.email_list.append(my_tempList[1])
 		self.totals_list.append(my_tempList[2])
 		self.orders_list.append(my_tempList[4])	
+		self.country_list.append(my_tempList[5])
+		self.city_list.append(my_tempList[6])
+		self.address_list.append(my_tempList[7])
+		self.phone_list.append(my_tempList[8])
 		
-		self.displayEntries(self.name_list, self.email_list, self.totals_list, self.orders_list)
+		self.displayEntries(self.name_list, self.email_list, self.totals_list, self.orders_list,self.country_list, self.city_list,self.address_list,self.phone_list)
 	
 
 	
@@ -428,16 +467,24 @@ class customer_detail:
 		email = []
 		total = []
 		orders = []
+		country = []
+		city = []
+		address = []
+		phone = []
 		# self.hold_details = []
 		found=False
 		if int(self.var.get()) == 1:
 			for key, value in self.processed_CUSTOMER_DETAIL.items():
-				if search_string in value[1]:
+				if search_string.lower() in value[1].lower():
 					name.append(key)
 					email.append(self.processed_CUSTOMER_DETAIL[key][1])
 					total.append(self.processed_CUSTOMER_DETAIL[key][2])
-					orders.append(self.processed_CUSTOMER_DETAIL[key][3])
-					self.displayEntries(name, email, total, orders)
+					orders.append(self.processed_CUSTOMER_DETAIL[key][4])
+					country.append(self.processed_CUSTOMER_DETAIL[key][5])
+					city.append(self.processed_CUSTOMER_DETAIL[key][6])
+					address.append(self.processed_CUSTOMER_DETAIL[key][7])
+					phone.append(self.processed_CUSTOMER_DETAIL[key][8])
+					self.displayEntries(name, email, total, orders, country,city,address,phone)
 					found = True
 					break
 			
@@ -446,12 +493,16 @@ class customer_detail:
 
 		elif int(self.var.get()) ==2:
 			for key, value in self.processed_CUSTOMER_DETAIL.items():
-				if search_string in value[0]:
+				if search_string.lower() in value[0].lower():
 					name.append(key)
 					email.append(self.processed_CUSTOMER_DETAIL[key][1])
 					total.append(self.processed_CUSTOMER_DETAIL[key][2])
-					orders.append(self.processed_CUSTOMER_DETAIL[key][3])
-					self.displayEntries(name, email, total, orders)
+					orders.append(self.processed_CUSTOMER_DETAIL[key][4])
+					country.append(self.processed_CUSTOMER_DETAIL[key][5])
+					city.append(self.processed_CUSTOMER_DETAIL[key][6])
+					address.append(self.processed_CUSTOMER_DETAIL[key][7])
+					phone.append(self.processed_CUSTOMER_DETAIL[key][8])
+					self.displayEntries(name, email, total, orders, country,city,address,phone)
 					found = True
 					break
 			
@@ -460,7 +511,7 @@ class customer_detail:
 
 	
 	
-	def displayEntries_modified(self,name,email, total, orders_list):
+	def displayEntries_modified(self,name,email, total, orders_list, country_list,city_list,address_list,phone_list):
 		for widget in self.entry_frame.winfo_children():
 			widget.destroy()
 		previous_length = 0
@@ -487,6 +538,18 @@ class customer_detail:
 			total_entry.grid(row=curr_row, column=3, padx=0,pady=0)
 			total_entry.configure(state='readonly', disabledbackground='white', disabledforeground='black')
 
+			phone_entry = tk.Entry(self.entry_frame,font="Halvetica 10 bold", bd=2, width=10)
+			phone_variable = phone_list[i]
+			phone_entry.insert(1,'%s'%phone_variable)
+			phone_entry.grid(row=curr_row, column=5, padx=0,pady=0)
+			phone_entry.configure(state='readonly', disabledbackground='white', disabledforeground='black')
+
+			address_entry = tk.Entry(self.entry_frame,font="Halvetica 10 bold", bd=2, width=100)
+			address_variable = country_list[i]+","+city_list[i]+","+address_list[i]
+			address_entry.insert(1,'%s'%address_variable)
+			address_entry.grid(row=curr_row, column=6, padx=0,pady=0)
+			address_entry.configure(state='readonly', disabledbackground='white', disabledforeground='black')
+
 
 			for j in range(len(orders_list[i])):
 				inner_row = curr_row+j
@@ -510,12 +573,12 @@ class customer_detail:
 
 
 	
-	def displayEntries(self,name_list,email_list, totals_list, orders_list):
+	def displayEntries(self,name_list,email_list, totals_list, orders_list,country_list,city_list,address_list,phone_list):
 		for widget in self.entry_frame.winfo_children():
 			widget.destroy()
 		
 		self.hold_details.clear()
-		self.hold_details =[name_list[0], email_list[0], totals_list[0], orders_list[0]]
+		self.hold_details =[name_list[0], email_list[0], totals_list[0], orders_list[0], country_list[0],city_list[0],address_list[0],phone_list[0]]
 		
 
 		if 1==1:
@@ -538,6 +601,20 @@ class customer_detail:
 			total_entry.insert(1,'%0.2f'%total_variable)
 			total_entry.grid(row=i+2, column=3, padx=0,pady=0)
 			total_entry.configure(state='readonly', disabledbackground='white', disabledforeground='black')
+
+
+			phone_entry = tk.Entry(self.entry_frame,font="Halvetica 10 bold", bd=2, width=10)
+			phone_variable = phone_list[i]
+			phone_entry.insert(1,'%s'%phone_variable)
+			phone_entry.grid(row=i+2, column=5, padx=0,pady=0)
+			phone_entry.configure(state='readonly', disabledbackground='white', disabledforeground='black')
+
+			address_entry = tk.Entry(self.entry_frame,font="Halvetica 10 bold", bd=2, width=100)
+			address_variable = country_list[i]+","+city_list[i]+","+address_list[i]
+			address_entry.insert(1,'%s'%address_variable)
+			address_entry.grid(row=i+2, column=6, padx=0,pady=0)
+			address_entry.configure(state='readonly', disabledbackground='white', disabledforeground='black')
+
 
 
 		for j in range(len(orders_list[0])):
@@ -633,7 +710,7 @@ class customer_detail:
 
 	def exportDataToFile2(self):
 		filename = 'Customer Value Report'
-		fieldnames =["Customer Name","Email","Total", "Orders"]
+		fieldnames =["Customer Name","Email","Total", "Orders","Phone","Address"]
 		try:
 			with open(filename+'.csv','w', newline='') as file:
 				writer =  csv.writer(file, lineterminator='\r')
@@ -644,18 +721,22 @@ class customer_detail:
 					combine_list.append(self.hold_details[1][i])
 					combine_list.append(self.hold_details[2][i])
 					combine_list.append(self.hold_details[3][i])
+					combine_list.append(self.hold_details[7][i])
+					combine_list.append(self.hold_details[4][i]+","+self.hold_details[5][i]+","+self.hold_details[6][i])
+
 					# string_row = "[\""+str(self.hold_details[0][i])+"\",\""+str(self.hold_details[1][i])+"\",\""+str(self.hold_details[2][i])+"\",\""+str(self.hold_details[3][i])+"\"]"
-					string_row = [str(self.hold_details[0][i]),str(self.hold_details[1][i]),str(self.hold_details[2][i]),str(self.hold_details[3][i])]
+					string_row = [str(self.hold_details[0][i]),str(self.hold_details[1][i]),str(self.hold_details[2][i]),str(self.hold_details[3][i]),str(self.hold_details[7][i]),str(self.hold_details[4][i]+","+self.hold_details[5][i]+","+self.hold_details[6][i])]
 					# try:
 					writer.writerow(string_row)
 					# except:
 						# pass
 		
+			dir_path = os.path.dirname(os.path.realpath(__file__))
+			self.showMsg("Customer Value Report has been saved at location: "+str(dir_path)+" in file: "+filename)
 		except:
 			self.showMsg("Please close already opened csv file or choose a different name for this file. Please try again!")
 
-		dir_path = os.path.dirname(os.path.realpath(__file__))
-		self.showMsg("Customer Value Report has been saved at location: "+str(dir_path)+" in file: "+filename)
+		
 		# showMsg("a
 		
 		# with open('report.csv','w', newline='') as file:

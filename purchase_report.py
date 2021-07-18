@@ -23,6 +23,7 @@ class purchase_detail:
 		self.entry_frame = tk.Frame()
 		self.processed_SKU_NAME  = []
 		self.hold_details = []
+		
 
 	
 	def process_data(self):
@@ -39,6 +40,7 @@ class purchase_detail:
 		customer_country =  utils.raw_column_list['Shipping Country']
 		customer_city = utils.raw_column_list['Shipping City']
 		customer_address = utils.raw_column_list['Shipping Street Address']
+		customer_phone = utils.raw_column_list['Shipping Phone']
 		
 		for i in range(len(item_sku)):
 			if item_sku[i] in detail_dict:
@@ -63,17 +65,17 @@ class purchase_detail:
 					except:
 						c_money =  c_money+float(purchase_dollar[i][1:])
 					c_qty = c_qty + int(purchase_qty[i])
-					all_detail_dict[item_sku[i]] = [c_name,c_email,c_qty, c_money]
 					c_country = customer_country[i]
 					c_city = customer_city[i]
 					c_add = customer_address[i]
+					c_phone = customer_phone[i]
 
-					all_detail_dict[item_sku[i]] = [c_name,c_email,c_qty, c_money,c_country, c_city, c_add]
+					all_detail_dict[item_sku[i]] = [c_name,c_email,c_qty, c_money,c_country, c_city, c_add, c_phone]
 					#---------------------after modification requested--------------------
 					sku_temp_list = detail_dict[item_sku[i]]
 					name_temp_list = name_detail_dict[item_name[i]]
-					detail_dict[item_sku[i]] = [c_name,c_email,c_qty,c_country, c_city, c_add]
-					name_detail_dict[item_name[i]] = [c_name,c_email,c_qty,c_country, c_city, c_add]
+					detail_dict[item_sku[i]] = [c_name,c_email,c_qty,c_country, c_city, c_add,c_phone]
+					name_detail_dict[item_name[i]] = [c_name,c_email,c_qty,c_country, c_city, c_add, c_phone]
 
 
 				else:
@@ -86,21 +88,21 @@ class purchase_detail:
 						dollar = float(purchase_dollar[i][1:])
 					qty = int(purchase_qty[i])
 
-					mList = [customer_name[i],customer_email[i],qty, customer_country[i], customer_city[i], customer_address[i]]
+					mList = [customer_name[i],customer_email[i],qty, customer_country[i], customer_city[i], customer_address[i], customer_phone[i]]
 					# custom_list.append(mList)
 					detail_dict[item_sku[i]].append(mList)
-					mList2 = [customer_name[i], customer_email[i],qty, customer_country[i], customer_city[i], customer_address[i]]
+					mList2 = [customer_name[i], customer_email[i],qty, customer_country[i], customer_city[i], customer_address[i], customer_phone[i]]
 					name_detail_dict[item_name[i]].append(mList2)
 
-					mList3 = [customer_name[i], customer_email[i],qty,dollar,customer_country[i], customer_city[i], customer_address[i]]
+					mList3 = [customer_name[i], customer_email[i],qty,dollar,customer_country[i], customer_city[i], customer_address[i], customer_phone[i]]
 					all_detail_dict[item_sku[i]].append(mList3)
 			else:
 				detail_dict[item_sku[i]] = []
-				detail_dict[item_sku[i]].append([customer_name[i], customer_email[i],purchase_qty[i], customer_country[i], customer_city[i],customer_address[i]])
+				detail_dict[item_sku[i]].append([customer_name[i], customer_email[i],purchase_qty[i], customer_country[i], customer_city[i],customer_address[i], customer_phone[i]])
 				name_detail_dict[item_name[i]] = []
-				name_detail_dict[item_name[i]].append([customer_name[i], customer_email[i],purchase_qty[i], customer_country[i], customer_city[i],customer_address[i]])
+				name_detail_dict[item_name[i]].append([customer_name[i], customer_email[i],purchase_qty[i], customer_country[i], customer_city[i],customer_address[i],customer_phone[i]])
 				all_detail_dict[item_sku[i]] = []
-				all_detail_dict[item_sku[i]].append([customer_name[i], customer_email[i], purchase_qty[i],purchase_dollar[i],customer_country[i], customer_city[i],customer_address[i]])
+				all_detail_dict[item_sku[i]].append([customer_name[i], customer_email[i], purchase_qty[i],purchase_dollar[i],customer_country[i], customer_city[i],customer_address[i], customer_phone[i]])
 	
 		self.processed_SKU_NAME = [detail_dict, name_detail_dict,all_detail_dict]
 		
