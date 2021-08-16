@@ -14,6 +14,7 @@ from tkinter import messagebox
 class purchase_detail:
 
 	def __init__(self):
+		
 		# print(root_reference)
 		# utils.init()
 		

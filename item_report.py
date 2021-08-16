@@ -14,6 +14,7 @@ from datetime import datetime
 class item_detail:
 
 	def __init__(self):
+		print("I'm the purchase report!")
 			# print(root_reference)
 		# utils.init()
 		self.previous_app = utils.root_reference
@@ -447,16 +448,28 @@ class item_detail:
 			qty_entry.grid(row=i+2, column=3, padx=0,pady=0)
 			qty_entry.configure(state='readonly', disabledbackground='white', disabledforeground='black')
 
-			address_entry = tk.Entry(self.entry_frame,font="Halvetica 10 bold", bd=2, width=40)
-			address_variable = str(country_list[i])+","+str(city_list[i])+","+str(address_list[i])
+			country_entry = tk.Entry(self.entry_frame,font="Halvetica 10 bold", bd=2, width=10)
+			country_variable = str(country_list[i])
+			country_entry.insert(1,'%s'%country_variable)
+			country_entry.grid(row=i+2, column=4, padx=0,pady=0)
+			country_entry.configure(state='readonly', disabledbackground='white', disabledforeground='black')
+
+			city_entry = tk.Entry(self.entry_frame,font="Halvetica 10 bold", bd=2, width=10)
+			city_variable = str(city_list[i])
+			city_entry.insert(1,'%s'%city_variable)
+			city_entry.grid(row=i+2, column=5, padx=0,pady=0)
+			city_entry.configure(state='readonly', disabledbackground='white', disabledforeground='black')
+
+			address_entry = tk.Entry(self.entry_frame,font="Halvetica 10 bold", bd=2, width=20)
+			address_variable = str(address_list[i])
 			address_entry.insert(1,'%s'%address_variable)
-			address_entry.grid(row=i+2, column=4, padx=0,pady=0)
+			address_entry.grid(row=i+2, column=6, padx=0,pady=0)
 			address_entry.configure(state='readonly', disabledbackground='white', disabledforeground='black')
 
 			phone_entry = tk.Entry(self.entry_frame,font="Halvetica 10 bold", bd=2, width=17)
 			phone_variable = str(phone_list[i])
 			phone_entry.insert(1,'%s'%phone_variable)
-			phone_entry.grid(row=i+2, column=5, padx=0,pady=0)
+			phone_entry.grid(row=i+2, column=7, padx=0,pady=0)
 			phone_entry.configure(state='readonly', disabledbackground='white', disabledforeground='black')
 
 		self.entry_frame.update_idletasks()
@@ -468,44 +481,22 @@ class item_detail:
 
 
 
-	def exportDataToFile(self):
-		file = ''
-		try:
-			file = filedialog.asksaveasfile(mode='w', defaultextension=".csv")
-		except:
-			self.showMsg("Please close already opened csv file or choose a different name for this file. Please try again!")
-		if file is None:
-			return
-		# data = self.all_in_one
-		# fieldnames =["Item SKU","Customer Names","Quantity","Unit Price","Total","last month Qty","last month Dollar"]
-		fieldnames =["Customer_Name","Email","address"]
-		# with open('report.csv','w', newline='') as file:
-		writer =  csv.writer(file, lineterminator='\r')
-		writer.writerow(fieldnames)
-		combined_str = ''
-		for i in range(len(self.hold_details)):
-			combine_list = []
-			combine_list.append(self.hold_details[i][0])
-			combine_list.append(self.hold_details[i][1])
-			writer.writerow(combine_list)
-		
-
 	
 	def exportDataToFile2(self):
 		filename = 'Item Purchase Report'
-		fieldnames =["Customer Name","Email","Num of units","Address","Phone"]
-		if 1==1:
-			with open(filename+'.csv','w', newline='') as file:
-				writer =  csv.writer(file, lineterminator='\r')
-				writer.writerow(fieldnames)
-				if type(self.hold_details[0])==list:
-					for i in range(len(self.hold_details)):
-						string_row = [str(self.hold_details[i][0]),str(self.hold_details[i][1]),str(self.hold_details[i][2]),str(str(self.hold_details[i][3])+","+str(self.hold_details[i][4])+","+str(self.hold_details[i][5])),str(self.hold_details[i][6])]
-						writer.writerow(string_row)
-				else:
-					for i in range(1):
-						string_row = [str(self.hold_details[0]),str(self.hold_details[1]),str(self.hold_details[2]),str(str(self.hold_details[3])+str(self.hold_details[4])+str(self.hold_details[5])),str(self.hold_details[6])]
-						writer.writerow(string_row)
+		fieldnames =["Customer Name","Email","Num of units","Country","State","Address","Phone"]
+	
+		with open(filename+'.csv','w', newline='') as file:
+			writer =  csv.writer(file, lineterminator='\r')
+			writer.writerow(fieldnames)
+			if type(self.hold_details[0])==list:
+				for i in range(len(self.hold_details)):
+					string_row = [str(self.hold_details[i][0]),str(self.hold_details[i][1]),str(self.hold_details[i][2]),str(self.hold_details[i][3]),str(self.hold_details[i][4]),str(self.hold_details[i][5]),str(self.hold_details[i][6])]
+					writer.writerow(string_row)
+			else:
+				for i in range(1):
+					string_row = [str(self.hold_details[0]),str(self.hold_details[1]),str(self.hold_details[2]),str(self.hold_details[3]),str(self.hold_details[4]),str(self.hold_details[5]),str(self.hold_details[6])]
+					writer.writerow(string_row)
 
 		
 		# except:
