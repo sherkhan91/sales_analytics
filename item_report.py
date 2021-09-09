@@ -41,6 +41,18 @@ class item_detail:
 		customer_city = utils.raw_column_list['Shipping City']
 		customer_address = utils.raw_column_list['Shipping Street Address']
 		customer_phone = utils.raw_column_list['Shipping Phone']
+
+
+		#TODO: unused variables remove later, git purposes
+		m_item_sku =  utils.raw_column_list['LineItem SKU']
+		m_item_name = utils.raw_column_list['LineItem Name']
+		m_purchase_qty = utils.raw_column_list['LineItem Qty']
+		m_customer_email = utils.raw_column_list['Email Address']
+		m_customer_name =  utils.raw_column_list['Shipping Name']
+		m_customer_country =  utils.raw_column_list['Shipping Country']
+		m_customer_city = utils.raw_column_list['Shipping City']
+		m_customer_address = utils.raw_column_list['Shipping Street Address']
+		m_customer_phone = utils.raw_column_list['Shipping Phone']
 		
 		for i in range(len(item_sku)):
 			if item_sku[i] in sku_detail_dict:
@@ -270,6 +282,11 @@ class item_detail:
 	def clearEntries(self):
 		self.sku_entry.delete(0,'end')
 		self.name_entry.delete(0,'end')
+
+	# TODO; baad me remove krde git k lie ha
+	def thisforg(self):
+		a_sku_entry=0
+		# self.name_entry.delete(0,'end')
 	
 	def showall(self):
 		self.name_list.clear()
