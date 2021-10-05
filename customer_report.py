@@ -14,7 +14,7 @@ from datetime import datetime
 class customer_detail:
 
 	def __init__(self):
-
+		
 		self.entry_frame = tk.Frame()
 		self.processed_CUSTOMER_DETAIL  = 0
 		self.previous_app = utils.root_reference
@@ -22,7 +22,7 @@ class customer_detail:
 
 		self.previous_app = utils.root_reference
 		self.previous_orders_row_length = 0
-		print("initialized")
+	
 
 
 	def showMsg(self,theMessage):

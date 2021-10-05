@@ -1,4 +1,6 @@
 # from ttkwidgets.autocomplete import AutocompleteCombobox
+from operator import mod
+from os import environ
 import tkinter as tk
 import utils
 import tkinter.messagebox
@@ -14,7 +16,7 @@ from tkinter import messagebox
 class purchase_detail:
 
 	def __init__(self):
-		
+		print("hello, I'm the item report")
 		# print(root_reference)
 		# utils.init()
 		
@@ -25,8 +27,6 @@ class purchase_detail:
 		self.processed_SKU_NAME  = []
 		self.hold_details = []
 		
-
-	
 	def process_data(self):
 		detail_dict  = defaultdict(list)
 		name_detail_dict =  defaultdict(list)
@@ -114,7 +114,6 @@ class purchase_detail:
 		# 		print(' ')
 		# 		print(' ')
 		
-
 	def main_display(self):
 		
 		mHeight = 190
@@ -189,7 +188,7 @@ class purchase_detail:
 
 		
 		self.canvas_for_scroll = tk.Canvas(self.frame_for_scroll, bg="lightgrey")
-		self.canvas_for_scroll.grid(row=1, column=1, sticky="news", padx=165) #ew
+		self.canvas_for_scroll.grid(row=1, column=1, sticky="news", padx=100) #ew
 
 		vertical_scrollbar =  tk.Scrollbar(self.frame_for_scroll, orient="vertical", command=self.canvas_for_scroll.yview)
 		vertical_scrollbar.grid(row=1, column=2, sticky='ns')
@@ -248,9 +247,9 @@ class purchase_detail:
 
 
 
-	
-		label_frame = tk.Frame(self.root, width=600, height=100, bg="#5DADE2", highlightbackground="darkblue", highlightthickness=1)
-		self.mainCanvas.create_window((170,160), window=label_frame, anchor='nw') #nw
+		# The height and width of label frame does not get applied	
+		label_frame = tk.Frame(self.root, width=0, height=0, bg="#5DADE2", highlightbackground="darkblue", highlightthickness=1)
+		self.mainCanvas.create_window((100,160), window=label_frame, anchor='nw') #nw
 
 		name_label = tk.Label(label_frame, text="Name")
 		name_label.config(font=("Times 13 bold italic"), fg=("darkblue"), bg=("#5DADE2"))
@@ -266,7 +265,7 @@ class purchase_detail:
 
 		add_label = tk.Label(label_frame, text="Address")
 		add_label.config(font=("Times 13 bold italic"), fg=("darkblue"), bg=("#5DADE2"))
-		add_label.grid(row=1, column=4, padx=50,pady=0)
+		add_label.grid(row=1, column=4, padx=100,pady=0)
 		
 		
 
@@ -297,6 +296,10 @@ class purchase_detail:
 	
 		self.name_list.clear()
 		self.email_list.clear()
+		self.qty_list.clear()
+		self.city_list.clear()
+		self.country_list.clear()
+		self.addr_list.clear()
 		my_tempList = []
 		# self.hold_details.clear()
 		
@@ -435,16 +438,27 @@ class purchase_detail:
 
 	def exportDataToFile(self):
 		file = ''
-		try:
-			file = filedialog.asksaveasfile(mode='w', defaultextension=".csv")
-		except:
-			self.showMsg("Please close already opened csv file or choose a different name for this file. Please try again!")
+		# Creating directory
+		directory = 'Report Central'
+		path_dir = 'C:\\Users\\Public\\Desktop\\Report Central'
+		import pathlib
+		path_dir = pathlib.Path(__file__).parent.resolve()
+		# import os
+		# if not os.path.exists(path_dir):
+			# os.makedir(path_dir)
+
+		# try:
+		if 1==1:
+			# file = filedialog.asksaveasfile(mode='w', defaultextension=".csv")
+			file = str(path_dir)+"\\sales_report.csv" 
+		# except:
+			# self.showMsg("Please close already opened csv file or choose a different name for this file. Please try again!")
 		if file is None:
 			return
 		# data = self.all_in_one
-		# fieldnames =["Item SKU","Customer Names","Quantity","Unit Price","Total","last month Qty","last month Dollar"]
-		fieldnames =["Customer_Name","Email"]
+		fieldnames =["Customer_Name","Email","Qty", "Address"]
 		# with open('report.csv','w', newline='') as file:
+
 		writer =  csv.writer(file, lineterminator='\r')
 		writer.writerow(fieldnames)
 		combined_str = ''
@@ -452,6 +466,8 @@ class purchase_detail:
 			combine_list = []
 			combine_list.append(self.hold_details[i][0])
 			combine_list.append(self.hold_details[i][1])
+			combine_list.append(self.hold_details[i][2])
+			combine_list.append(self.hold_details[i][3]+","+self.hold_details[i][4]+","+self.hold_details[i][5])
 			writer.writerow(combine_list)
 		
 	def gotoPreviousModule(self):

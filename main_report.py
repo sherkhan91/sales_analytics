@@ -24,12 +24,10 @@ from tkinter import messagebox
 
 class Report:
 
-	
 
 	def __init__(self,_root,_width,_height):
 		# self.root = tk.Tk()
 		reference_data = 0
-		print("started the purchase report.")
 		
 		self.screen_width = _width
 		self.screen_height = _height
