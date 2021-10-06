@@ -1,6 +1,6 @@
 # from ttkwidgets.autocomplete import AutocompleteCombobox
 from operator import mod
-from os import environ
+from os import environ, path
 import tkinter as tk
 import utils
 import tkinter.messagebox
@@ -10,6 +10,7 @@ from tkinter import filedialog
 import csv
 import main_report
 from tkinter import messagebox
+import random
 # from report_main import report_main.root_reference
 # utils.raw_column_list.append("hello")
 
@@ -437,38 +438,45 @@ class purchase_detail:
 		tkinter.messagebox.showinfo("Info!",theMessage)
 
 	def exportDataToFile(self):
-		file = ''
-		# Creating directory
-		directory = 'Report Central'
-		path_dir = 'C:\\Users\\Public\\Desktop\\Report Central'
-		import pathlib
-		path_dir = pathlib.Path(__file__).parent.resolve()
-		# import os
-		# if not os.path.exists(path_dir):
-			# os.makedir(path_dir)
-
+		# file = ''
+		
+		# path_dir = 'C:\\Users\\Public\\Desktop\\Report Central'
+		# import pathlib
+		# path_dir = pathlib.Path(__file__).parent.resolve()
+	
 		# try:
-		if 1==1:
 			# file = filedialog.asksaveasfile(mode='w', defaultextension=".csv")
-			file = str(path_dir)+"\\sales_report.csv" 
-		# except:
-			# self.showMsg("Please close already opened csv file or choose a different name for this file. Please try again!")
-		if file is None:
-			return
+		# 	file = str(path_dir)+"\\sales_report.csv" 
+		# # except:
+		# 	# self.showMsg("Please close already opened csv file or choose a different name for this file. Please try again!")
+		# if file is None:
+		# 	return
+		first_int = random.randint(1,9)
+		second_int = random.randint(1,9)
+		third_int = random.randint(1,9)
+		file_ending = str(first_int)+str(second_int)+str(third_int)
+		# file_location_and_name = str(path_dir)+'\\sales_report'+file_ending+'.csv'
+		file_name = 'sales_report'+file_ending+'.csv'
+		with open(file_name, mode='w') as file:
 		# data = self.all_in_one
-		fieldnames =["Customer_Name","Email","Qty", "Address"]
+			fieldnames =["Customer_Name","Email","Qty", "Address"]
 		# with open('report.csv','w', newline='') as file:
 
-		writer =  csv.writer(file, lineterminator='\r')
-		writer.writerow(fieldnames)
-		combined_str = ''
-		for i in range(len(self.hold_details)):
-			combine_list = []
-			combine_list.append(self.hold_details[i][0])
-			combine_list.append(self.hold_details[i][1])
-			combine_list.append(self.hold_details[i][2])
-			combine_list.append(self.hold_details[i][3]+","+self.hold_details[i][4]+","+self.hold_details[i][5])
-			writer.writerow(combine_list)
+			writer =  csv.writer(file, lineterminator='\r')
+			writer.writerow(fieldnames)
+			combined_str = ''
+			for i in range(len(self.hold_details)):
+				combine_list = []
+				combine_list.append(self.hold_details[i][0])
+				combine_list.append(self.hold_details[i][1])
+				combine_list.append(self.hold_details[i][2])
+				combine_list.append(self.hold_details[i][3]+","+self.hold_details[i][4]+","+self.hold_details[i][5])
+				try:
+					writer.writerow(combine_list)
+				except PermissionError:
+					self.showMsg("Please close the previous file to save another file.")
+			self.showMsg("The file has been saved at location where this program located with file name: "+file_name)	
+					
 		
 	def gotoPreviousModule(self):
 		self.previous_app.deiconify()

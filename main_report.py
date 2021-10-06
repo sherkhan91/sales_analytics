@@ -624,8 +624,6 @@ class Report:
 		lastmonthSortDollarBtn.configure(foreground='darkblue')
 		self.bottomCanvas.create_window(700,120, window=lastmonthSortDollarBtn , height=30, width=180, anchor=tk.SW)
 		self.bottomCanvas.pack(side=tk.RIGHT)
-
-		
 		
 
 	def close_window(self):
