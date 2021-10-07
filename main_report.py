@@ -12,6 +12,7 @@ import utils
 import purchase_report
 import customer_report
 import item_report
+import discount_report
 from tkinter import messagebox
 
 
@@ -293,6 +294,7 @@ class Report:
 		# self.myCanvas.pack()
 	
 
+	""" Menu stuff is inside this function. """
 	def ProcessInput(self):
 		self.createEntryUI()
 		columns =  defaultdict(list)
@@ -324,12 +326,17 @@ class Report:
 			self.root.withdraw()
 
 			
+		def openDiscountModule():
+			dReport = discount_report.discount_detail()
+			dReport.main()
+			self.root.withdraw()
 
 		menubar =  tk.Menu(self.root)
 		moduleMenu = tk.Menu(menubar, tearoff=0)
-		moduleMenu.add_command(label="Open Purchase Detail Module", command=openPurchaseModule)
 		moduleMenu.add_command(label="Open Customer Detail Module", command=openCustomerModule )
+		moduleMenu.add_command(label="Open Discount Detail Module", command=openDiscountModule )
 		moduleMenu.add_command(label="Open Item Detail Module", command=openItemModule )
+		moduleMenu.add_command(label="Open Purchase Detail Module", command=openPurchaseModule)
 		menubar.add_cascade(label="Module Menu", menu=moduleMenu)
 		self.root.config(menu=menubar)
 		""" Menu bar closed here """
