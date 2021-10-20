@@ -115,7 +115,7 @@ class Report:
 		self.myCanvas.create_text(70,120,fill="darkblue",font="Times 13 bold italic", text="Item Name")
 		self.myCanvas.create_text(280,120, fill="darkblue", font="Times 13 bold italic",text="Item SKU")
 		self.myCanvas.create_text(400,120, fill="darkblue",font="Times 13 bold italic", text="Quantity")
-		self.myCanvas.create_text(500,120, fill="darkblue",font="Times 13 bold italic", text="Unit Price")
+		self.myCanvas.create_text(500,120, fill="darkblue",font="Times 13 bold italic", text="Avg Unit Price")
 		self.myCanvas.create_text(580,120, fill="darkblue",font="Times 13 bold italic", text="Total")
 		self.myCanvas.create_text(690,120, fill="darkblue", font="Times 13 bold italic", text="last month Qty")
 		self.myCanvas.create_text(840,120, fill="darkblue", font="Times 13 bold italic", text="last month Dollar")
@@ -293,19 +293,7 @@ class Report:
 
 		# self.myCanvas.pack()
 	
-
-	""" Menu stuff is inside this function. """
-	def ProcessInput(self):
-		self.createEntryUI()
-		columns =  defaultdict(list)
-		columns = validate_data.perform_data_check()
-		utils.init()
-		utils.raw_column_list = columns
-
-	
-
-		""" Menubar stuff will go here """
-
+	def modules_menu(self):
 		""" Menu to open purchase report """
 		def openPurchaseModule():
 			mReport  = purchase_report.purchase_detail()
@@ -341,6 +329,20 @@ class Report:
 		self.root.config(menu=menubar)
 		""" Menu bar closed here """
 
+
+
+	""" Menu stuff is inside this function. """
+	def ProcessInput(self):
+		self.createEntryUI()
+		columns =  defaultdict(list)
+		columns = validate_data.perform_data_check()
+		utils.init()
+		utils.raw_column_list = columns
+
+
+		""" Menubar stuff will go here """
+		self.modules_menu()
+
 	
 		item_sku =   columns['LineItem SKU']
 		item_names =   columns['LineItem Name']
@@ -370,11 +372,19 @@ class Report:
 				except:
 					currentQty = 0
 
+				try:
+					floatPrice = float(item_price[i][1:])
+				except:
+					floatPrice = 0.0
+					# item_price = 
 				# print("a list is: ", alist)
 				# print("a list specific: ", alist[0],alist[1],item_qty[i],alist[2],alist[3] )
-
-				item_dict[item_sku[i]] = [alist[0],savedQty+currentQty, alist[2],alist[3]+"*"+date_list]
+				previous_total = alist[4]
+				total = previous_total+(currentQty*floatPrice)
+				avg_price = (total/(savedQty+currentQty))
+				item_dict[item_sku[i]] = [alist[0],savedQty+currentQty, avg_price ,alist[3]+"*"+date_list, total]
 			else:
+				floatPrice = 0.0
 				try:
 					currentQty = 0
 					order_date = '01-10-0001'
@@ -386,9 +396,12 @@ class Report:
 						order_date = item_order_date[i]
 					except:
 						order_date = '01-10-0001'
-				
-	
-					item_dict[item_sku[i]] = [str(""+item_names[i]),currentQty,float(item_price[i]),order_date]
+					try:
+						floatPrice = float(item_price[i][1:])
+					except:
+						floatPrice = 0.0
+
+					item_dict[item_sku[i]] = [str(""+item_names[i]),currentQty,float(item_price[i]),order_date, (float(currentQty)*floatPrice)]
 				except:
 					# print("one cycle:----------------------------------------------")
 					# print(int(item_qty[i]))
@@ -410,7 +423,7 @@ class Report:
 						order_date = item_order_date[i]
 					except:
 						order_date = '01-10-0001'
-					item_dict[item_sku[i]] = [str(""+item_names[i]),currentQty,floatPrice,order_date]
+					item_dict[item_sku[i]] = [str(""+item_names[i]),currentQty,floatPrice,order_date, (float(currentQty)*floatPrice)]
 					# print([str(""+item_names[i]),int(item_qty[i]),float(item_price[i][1:]),item_order_date[i]])
 
 		self.grid_height = len(item_dict)
@@ -421,6 +434,7 @@ class Report:
 		qty_list = []
 		unit_price_list = []
 		sold_lastmonth_list = []
+		total_price_list = []
 
 		proper_dates = self.format_dates(item_dict)
 		timestamps = self.format_dates(item_dict)
@@ -435,14 +449,25 @@ class Report:
 		total_units_sold = []
 		total_sales_dollar = []
 		
+		print_value = True
+
 		for key in item_dict.keys():
-			#print(key)
 			myList = item_dict[key]
+			# if print_value:
+			# 	print(key)
+			# 	print("-------------------")
+			# 	print(myList[4])
+			# 	print_value = False
+			
 			sku_list.append(key)
 			item_list.append(myList[0])
 			qty_list.append(myList[1])
 			unit_price_list.append(myList[2])
-
+			total_price_list.append(myList[4])
+			
+			
+			# print(f'Quantity: {myList[1]}, Unit price: {myList[2]}')
+		# print(total_price_list)
 		for total in qty_list:
 			total_units_sold.append(total)
 
@@ -457,7 +482,7 @@ class Report:
 
 		for i in range(self.grid_height):
 			#print(item_list[i],qty_list[i],unit_price_list[i],float(qty_list[i])*float(unit_price_list[i]))
-			temp_list = [sku_list[i],item_list[i],int(qty_list[i]),float(unit_price_list[i]),float(float(qty_list[i])*float(unit_price_list[i])),sold_lastmonth_list[i],(int(sold_lastmonth_list[i])*float(unit_price_list[i]))]
+			temp_list = [sku_list[i],item_list[i],int(qty_list[i]),float(unit_price_list[i]),total_price_list[i],sold_lastmonth_list[i],(int(sold_lastmonth_list[i])*float(unit_price_list[i]))]
 			self.all_in_one.append(temp_list)
 
 		self.columnHeadings()
@@ -492,7 +517,7 @@ class Report:
 		if file is None:
 			return
 		data = self.all_in_one
-		fieldnames =["Item SKU","Item Name","Quantity","Unit Price","Total","last month Qty","last month Dollar"]
+		fieldnames =["Item SKU","Item Name","Quantity","Avg Unit Price","Total","last month Qty","last month Dollar"]
 		# with open('report.csv','w', newline='') as file:
 		writer =  csv.writer(file, lineterminator='\r')
 		writer.writerow(fieldnames)
@@ -513,12 +538,14 @@ class Report:
 		unit_price_list = []
 		sold_lastmonth_qty = []
 		total_sales_dollar = []
+		totals_list = []
 
 		for i in range(len(all_items_list)):
 			sku_list.append(all_items_list[i][0])
 			item_list.append(all_items_list[i][1])
 			qty_list.append(all_items_list[i][2])
 			unit_price_list.append(all_items_list[i][3])
+			totals_list.append(all_items_list[i][4])
 			sold_lastmonth_qty.append(all_items_list[i][5])
 			total_sales_dollar.append(all_items_list[i][6])
 
@@ -556,12 +583,14 @@ class Report:
 					# entryList.append(b)
 				elif j==3:
 					b = tk.Entry(self.grid_frame, font="Halvetica 10 bold",bd=2, width=12)
-					b.insert(1, '%s'%(unit_price_list[i]))
+					b.insert(1, '%0.2f'%(float(unit_price_list[i])))
 					b.configure(state='disabled', disabledbackground='white', disabledforeground='black')
 					# entryList.append(b)
 				elif j==4:
 					b = tk.Entry(self.grid_frame, font="Halvetica 10 bold", bd=2, width=12)
-					b.insert(1,'%0.2f'%(int(qty_list[i])* float(unit_price_list[i]) ))
+					# print()
+					# number = 0
+					b.insert(1,'%0.2f'%(totals_list[i]))
 					# total_sales_dollar.append(int(qty_list[i])*float(unit_price_list[i]))
 					b.configure(state='disabled', disabledbackground='white', disabledforeground='black')
 					# entryList.append(b)
@@ -667,7 +696,6 @@ class Report:
 		self.all_in_one= sorted(temp_all_in_one, reverse=True, key=lambda x:x[4])	
 		self.displayGrid(self.all_in_one)
 
-	
 
 
 
