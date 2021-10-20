@@ -227,8 +227,8 @@ class discount_detail:
 
 		label_frame.update_idletasks()
 
-		self.entry_frame = tk.Frame(self.canvas_for_scroll, width=650, height=20, bg="#5DADE2")
-		self.canvas_for_scroll.create_window((0,0), window=self.entry_frame, anchor='nw')
+		self.entry_frame = tk.Frame(self.canvas_for_scroll, width=550, height=20, bg="#5DADE2")
+		self.canvas_for_scroll.create_window((60,0), window=self.entry_frame, anchor='nw')
 
 
 		self.mainCanvas.pack()
@@ -343,9 +343,10 @@ class discount_detail:
 	def displayEntries(self,name_list,date_list,discount_list):
 		for widget in self.entry_frame.winfo_children():
 			widget.destroy()
-
+		total_variable = 0
+		row_variable= 0
 		for i in range(len(name_list)):
-			name_entry = tk.Entry(self.entry_frame,font="Halvetica 10 bold", bd=2, width=15)
+			name_entry = tk.Entry(self.entry_frame,font="Halvetica 10 bold", bd=2, width=25)
 			name_variable = name_list[i]
 			name_entry.insert(1,'%s'%name_variable)
 			name_entry.grid(row=i+2, column=1, padx=0,pady=0)
@@ -359,10 +360,34 @@ class discount_detail:
 
 			discount_entry = tk.Entry(self.entry_frame,font="Halvetica 10 bold", bd=2, width=5)
 			discount_variable = discount_list[i]
+			total_variable += discount_variable
 			discount_entry.insert(1,'%s'%discount_variable)
 			discount_entry.grid(row=i+2, column=3, padx=0,pady=0)
+			row_variable= i+2
 			discount_entry.configure(state='readonly', disabledbackground='white', disabledforeground='black')
 
+
+		# blank_entry = tk.Entry(self.entry_frame, font="Halvetica 10 bold", bd=2, width=0)
+		# blank_entry.insert(1, '')
+		# blank_entry.grid(row=row_variable+1, column=1, padx=0, pady=0)
+		# blank_entry.configure(state='readonly', disabledbackground='#5DADE2',  disabledforeground='black')
+		
+		total_entry1 = tk.Entry(self.entry_frame, font="Halvetica 10 bold", bd=2, width=25)
+		total_entry1.insert(1, 'Total: ')
+		total_entry1.grid(row=row_variable+2, column=1, padx=0, pady=10)
+		total_entry1.configure(state='readonly', disabledbackground='white',  disabledforeground='black')
+
+		total_entry2 = tk.Entry(self.entry_frame, font="Halvetica 10 bold", bd=2, width=30)
+		total_variable_msg = ' discount for code'
+		total_entry2.insert(1, '%s'%total_variable_msg)
+		total_entry2.grid(row=row_variable+2, column=2, padx=0, pady=0)
+		total_entry2.configure(state='readonly', disabledbackground='white',  disabledforeground='black')
+
+		total_entry3 = tk.Entry(self.entry_frame, font="Halvetica 10 bold", bd=2, width=5)
+		total_variable = f'{total_variable}'
+		total_entry3.insert(1, '%s'%total_variable)
+		total_entry3.grid(row=row_variable+2, column=3, padx=0, pady=0)
+		total_entry3.configure(state='readonly', disabledbackground='white',  disabledforeground='black')
 
 		self.entry_frame.update_idletasks()
 		self.frame_for_scroll.update_idletasks()	

@@ -458,7 +458,7 @@ class purchase_detail:
 		file_name = 'sales_report'+file_ending+'.csv'
 		with open(file_name, mode='w') as file:
 		# data = self.all_in_one
-			fieldnames =["Customer_Name","Email","Qty", "Address"]
+			fieldnames =["Customer_Name","Email","Qty", "Country", "State", "Street"]
 		# with open('report.csv','w', newline='') as file:
 
 			writer =  csv.writer(file, lineterminator='\r')
@@ -469,7 +469,9 @@ class purchase_detail:
 				combine_list.append(self.hold_details[i][0])
 				combine_list.append(self.hold_details[i][1])
 				combine_list.append(self.hold_details[i][2])
-				combine_list.append(self.hold_details[i][3]+","+self.hold_details[i][4]+","+self.hold_details[i][5])
+				combine_list.append(self.hold_details[i][3])
+				combine_list.append(self.hold_details[i][4])
+				combine_list.append(self.hold_details[i][5])
 				try:
 					writer.writerow(combine_list)
 				except PermissionError:
