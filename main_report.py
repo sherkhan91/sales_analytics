@@ -48,7 +48,12 @@ class Report:
 		utils.root_reference = self.root
 		
 		#print("initialized")
-		
+	def extra_git_function(self):
+		mylist = [0, 1, 1]
+		x = all(mylist)
+		for i in mylist:
+			b= i*1
+
 	def on_closing(self):
 		if messagebox.askokcancel('Quit','Warning: By closing this screen, you can not do further processing.!'):
 			self.root.destroy()

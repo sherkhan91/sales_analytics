@@ -17,12 +17,11 @@ import random
 class purchase_detail:
 
 	def __init__(self):
-		# print(root_reference)
 		# utils.init()
 		
 		self.previous_app = utils.root_reference
 
-		# print(previous_app)
+		
 		self.entry_frame = tk.Frame()
 		self.processed_SKU_NAME  = []
 		self.hold_details = []
@@ -51,7 +50,6 @@ class purchase_detail:
 				if [customer_name[i], customer_email[i]] in check_temp_list:
 					my_temp = []
 					my_temp = all_detail_dict[item_sku[i]]
-					# print("here is my temp:",my_temp)
 					c_name = my_temp[0][0]
 					c_email = my_temp[0][1]
 					c_qty = int(my_temp[0][2])
@@ -207,7 +205,7 @@ class purchase_detail:
 		self.qty_list = [1,1,1,1]
 		self.country_list = ['USA','UK','DE','BE']
 		self.city_list = ['Amsterdam','Rotterdam','Utrech','Denhaag']
-		self.addr_list = ['Eastonstraat','Zuid','Damrak','Reijkvorsel']
+		self.addr_list = ['Street Add1','Street Add2','City','State']
 
 
 		combo_frame = tk.Frame(self.root, width=600, height=100, bg="#5DADE2", highlightbackground="darkblue", highlightcolor="darkblue", highlightthickness=1)
@@ -398,6 +396,14 @@ class purchase_detail:
 	def searchItem(self):
 			print("yes I'm searching")
 
+	def this_function_for_git(self):
+		mylist = [0, 1, 1]
+		x = all(mylist)
+		for i in mylist:
+			b= i*1
+
+		
+		# Returns False because 0 is the same as False
 
 	def displayEntries(self,name_list,email_list,qty_list,country_list,city_list,addr_list):
 		for widget in self.entry_frame.winfo_children():
@@ -423,7 +429,7 @@ class purchase_detail:
 			qty_entry.configure(state='readonly', disabledbackground='white', disabledforeground='black')
 
 			address_entry = tk.Entry(self.entry_frame,font="Halvetica 10 bold", bd=2, width=70)
-			address_variable = str(country_list[i])+","+str(city_list[i])+","+str(addr_list[i])
+			address_variable = str(addr_list[i]+","+str(city_list[i])+","+str(country_list[i]))
 			address_entry.insert(1,'%s'%address_variable)
 			address_entry.grid(row=i+2, column=4, padx=0,pady=0)
 			address_entry.configure(state='readonly', disabledbackground='white', disabledforeground='black')
@@ -458,7 +464,7 @@ class purchase_detail:
 		file_name = 'sales_report'+file_ending+'.csv'
 		with open(file_name, mode='w') as file:
 		# data = self.all_in_one
-			fieldnames =["Customer_Name","Email","Qty", "Country", "State", "Street"]
+			fieldnames =["Customer_Name","Email","Qty", "Address"]
 		# with open('report.csv','w', newline='') as file:
 
 			writer =  csv.writer(file, lineterminator='\r')
@@ -469,9 +475,11 @@ class purchase_detail:
 				combine_list.append(self.hold_details[i][0])
 				combine_list.append(self.hold_details[i][1])
 				combine_list.append(self.hold_details[i][2])
-				combine_list.append(self.hold_details[i][3])
-				combine_list.append(self.hold_details[i][4])
-				combine_list.append(self.hold_details[i][5])
+				# Address_list = []
+				combine_list.append(self.hold_details[i][5]+","+self.hold_details[i][4]+","+self.hold_details[i][3])
+				# Address_list.extend()
+				# Address_list.extend()
+				# combine_list.append(Address_list) # City
 				try:
 					writer.writerow(combine_list)
 				except PermissionError:
