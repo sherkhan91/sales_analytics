@@ -1,0 +1,8 @@
+1. Main screen should have predefined date ranges, last 30, 90, 365 days as filter or no filter,
+2. Calculations on main screen (within given time range point 1)
+ i. Average sale amount of selected date range
+ ii. How many total orders are there
+ iii. How many uniques customers we had in that unique time period 
+3. Discount module shows many listing of same entry
+4. Purchase detail module does not work
+ 

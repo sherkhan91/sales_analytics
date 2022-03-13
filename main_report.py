@@ -5,7 +5,7 @@ from collections import defaultdict
 from operator import itemgetter
 from datetime import datetime, timedelta
 import datetime
-from tkinter import filedialog
+from tkinter import DISABLED, filedialog
 import tkinter.messagebox
 import validate_data
 import utils
@@ -14,6 +14,7 @@ import customer_report
 import item_report
 import discount_report
 from tkinter import messagebox
+from tkinter import ttk
 
 
 
@@ -115,6 +116,20 @@ class Report:
 					columns[k].append(v)
 		return columns
 
+	def dateFilterUI(self):
+		"""date filter 30, 90, 365 days or no filter"""
+		filter_values = ['30', '90', '365', 'alltime']
+		self.myCanvas.create_text(280,100, fill="darkblue", font="Times 13 bold italic", text="date range")
+	
+		self.filter_entry =  ttk.Combobox(width=15, values=filter_values, state="readonly")
+		self.myCanvas.create_window(330,110, window=self.filter_entry, height=20, width=150, anchor=tk.SW)
+
+		filterBtn = tk.Button(font="Times 12 bold italic", text="Filter", command=self.filterResults)
+		filterBtn.configure(background='#5DADE2')
+		filterBtn.configure(foreground='darkblue')
+		self.myCanvas.create_window(490,110, window=filterBtn, height=20, width=100, anchor=tk.SW)
+		
+
 	def columnHeadings(self):
 		# columns labels
 		self.myCanvas.create_text(70,120,fill="darkblue",font="Times 13 bold italic", text="Item Name")
@@ -124,6 +139,22 @@ class Report:
 		self.myCanvas.create_text(580,120, fill="darkblue",font="Times 13 bold italic", text="Total")
 		self.myCanvas.create_text(690,120, fill="darkblue", font="Times 13 bold italic", text="last month Qty")
 		self.myCanvas.create_text(840,120, fill="darkblue", font="Times 13 bold italic", text="last month Dollar")
+
+		self.dateFilterUI()
+		
+
+	def filterResults(self):
+		selected_filter = self.filter_entry.get()
+		if selected_filter == '30':
+			self.filter30Days()
+		elif selected_filter == '90':
+			self.filter90Days()
+		elif selected_filter == '365':
+			self.filter365Days()
+		else:
+			print('reset to default all time')
+		
+
 
 	def sortQty(self):
 		# all_in_one = self.getall()
@@ -210,7 +241,6 @@ class Report:
 		self.bottomCanvas.create_window(452,220, window=rootFrame1, height=60, width=900)
 		
 	def searchQuery(self):
-		print("yes im working")
 		all_lists = self.all_in_one
 		# resultset  = [0,0,0,0,0,0,0]
 		resultset  = []
@@ -232,8 +262,6 @@ class Report:
 					resultset.append(all_lists[i])
 		
 		
-		# resultset = self.searchQuery()
-		# print("here is result set:", resultset)
 		resultEntryList = []
 		entryFont = "Halvetica 10 bold"
 	
@@ -336,7 +364,7 @@ class Report:
 
 
 
-	""" Menu stuff is inside this function. """
+	""" Menu function call inside this function. """
 	def ProcessInput(self):
 		self.createEntryUI()
 		columns =  defaultdict(list)
@@ -348,7 +376,22 @@ class Report:
 		""" Menubar stuff will go here """
 		self.modules_menu()
 
-	
+		def get_current_qty(item_qty_array, i):
+			currentQty = 0
+			try:
+				currentQty = int(item_qty_array[i])
+			except:
+				currentQty = 0
+			return currentQty
+
+		def price_to_float(item_price,i):
+			floatPrice = 0.0
+			try:
+				floatPrice = float(item_price[i][1:])
+			except:
+				floatPrice = 0.0
+			return floatPrice
+
 		item_sku =   columns['LineItem SKU']
 		item_names =   columns['LineItem Name']
 		item_qty   =   columns['LineItem Qty']
@@ -356,12 +399,13 @@ class Report:
 		item_order_date = columns['Order Date and Time Stamp']
 
 		item_dict = {}
-			
+		self.validatedCSV = [item_sku, item_names, item_qty, item_price, item_order_date] 
+
 		for i in range(len(item_sku)):
 			if item_sku[i] in item_dict:
 				alist = item_dict.get(item_sku[i])
 				date_list = []
-				currentQty = 0
+				currentQty = get_current_qty(item_qty, i)
 				savedQty = 0
 				try:
 					date_list =  item_order_date[i]
@@ -372,15 +416,8 @@ class Report:
 					savedQty = int(alist[1])
 				except:
 					savedQty = 0
-				try:
-					currentQty = int(item_qty[i])
-				except:
-					currentQty = 0
-
-				try:
-					floatPrice = float(item_price[i][1:])
-				except:
-					floatPrice = 0.0
+				
+				floatPrice = price_to_float(item_price, i)
 					# item_price = 
 				# print("a list is: ", alist)
 				# print("a list specific: ", alist[0],alist[1],item_qty[i],alist[2],alist[3] )
@@ -391,20 +428,14 @@ class Report:
 			else:
 				floatPrice = 0.0
 				try:
-					currentQty = 0
+					currentQty = get_current_qty(item_qty, i)
+					floatPrice = price_to_float(item_price, i)
 					order_date = '01-10-0001'
-					try:
-						currentQty = int(item_qty[i])
-					except:
-						currentQty = 0
+
 					try:
 						order_date = item_order_date[i]
 					except:
 						order_date = '01-10-0001'
-					try:
-						floatPrice = float(item_price[i][1:])
-					except:
-						floatPrice = 0.0
 
 					item_dict[item_sku[i]] = [str(""+item_names[i]),currentQty,float(item_price[i]),order_date, (float(currentQty)*floatPrice)]
 				except:
@@ -413,17 +444,13 @@ class Report:
 					# print(float(item_price[i][1:]))
 					# print(item_order_date[i])
 					currentQty = 0
-					floatPrice = 0.0
+					floatPrice = price_to_float(item_price, i)
 					order_date = '01-10-0001'
 					try:
 						currentQty = int(item_qty[i])
 					except:
 						currentQty = 0
 
-					try:
-						floatPrice = float(item_price[i][1:])
-					except:
-						floatPrice = 0.0
 					try:
 						order_date = item_order_date[i]
 					except:
@@ -446,7 +473,7 @@ class Report:
 		timestamps.sort()
 		
 		last_date_from_report =  timestamps[len(timestamps)-1][0]
-		
+		print(f'last date from report: {last_date_from_report}')
 		for l in range(len(proper_dates)):
 			how_many =  self.countdays(proper_dates[l],last_date_from_report)
 			sold_lastmonth_list.append(how_many)
@@ -701,7 +728,58 @@ class Report:
 		self.all_in_one= sorted(temp_all_in_one, reverse=True, key=lambda x:x[4])	
 		self.displayGrid(self.all_in_one)
 
+	def return_filtered_column(self, days):
+		raw_columns = self.validatedCSV
+		item_sku =   raw_columns[0]
+		item_names =   raw_columns[1]
+		item_qty   =   raw_columns[2]
+		item_price =   raw_columns[3]
+		item_order_date = raw_columns[4]
 
+		filter_sku =   []
+		filter_names =   []
+		filter_qty   =   []
+		filter_price =   []
+
+		formatted_dates = [] 
+		for raw_date in item_order_date:
+			formatted_dates.append(self.guessDate(raw_date))
+		
+		formatted_dates.sort()
+		last_sale_date = formatted_dates[len(formatted_dates)-1]
+		break_date = last_sale_date+timedelta(days=days)
+
+		for sku,name,qty,price, fdate in zip(item_sku, item_names, item_qty, item_price, formatted_dates):
+			if  last_sale_date <= fdate <=break_date:
+				filter_sku.append(sku)
+				filter_names.append(name)
+				filter_qty.append(qty)
+				filter_price.append(price)
+
+		return [filter_sku, filter_names, filter_qty, filter_price]
+
+	def filter30Days(self):
+		print('only 30 days')
+		filtered_list = self.return_filtered_column(30)
+		skus = filtered_list[0]
+		names = filtered_list[1]
+		qtys = filtered_list[2]
+		prices = filtered_list[3]
+
+		processed_sku = []
+		processed_names = []
+		processed_qtys = []
+		processed_prices = []
+		
+
+	
+	def filter90Days(self):
+		print('only 90 days')
+		
+
+	def filter365Days(self):
+		print('only 365 days')
+		
 
 
 if __name__ == "__main__":
