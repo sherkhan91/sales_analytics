@@ -545,7 +545,8 @@ class customer_detail:
 			phone_entry.configure(state='readonly', disabledbackground='white', disabledforeground='black')
 
 			address_entry = tk.Entry(self.entry_frame,font="Halvetica 10 bold", bd=2, width=100)
-			address_variable = country_list[i]+","+city_list[i]+","+address_list[i]
+			# address_variable = country_list[i]+","+city_list[i]+","+address_list[i]
+			address_variable = address_list[i]+","+city_list[i]+","+country_list[i]
 			address_entry.insert(1,'%s'%address_variable)
 			address_entry.grid(row=curr_row, column=6, padx=0,pady=0)
 			address_entry.configure(state='readonly', disabledbackground='white', disabledforeground='black')
@@ -610,7 +611,8 @@ class customer_detail:
 			phone_entry.configure(state='readonly', disabledbackground='white', disabledforeground='black')
 
 			address_entry = tk.Entry(self.entry_frame,font="Halvetica 10 bold", bd=2, width=100)
-			address_variable = country_list[i]+","+city_list[i]+","+address_list[i]
+			# address_variable = country_list[i]+","+city_list[i]+","+address_list[i]
+			address_variable = +address_list[i]+","+city_list[i]+","+country_list[i]
 			address_entry.insert(1,'%s'%address_variable)
 			address_entry.grid(row=i+2, column=6, padx=0,pady=0)
 			address_entry.configure(state='readonly', disabledbackground='white', disabledforeground='black')

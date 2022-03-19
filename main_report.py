@@ -19,6 +19,7 @@ from tkinter import ttk
 
 
 
+
 #screen_width=root.winfo_screenwidth()-100
 #screen_height=root.winfo_screenheight()-100
 # screen_height=200
@@ -48,13 +49,6 @@ class Report:
 		# utils.init()
 		utils.root_reference = self.root
 		
-		#print("initialized")
-	def extra_git_function(self):
-		mylist = [0, 1, 1]
-		x = all(mylist)
-		for i in mylist:
-			b= i*1
-
 	def on_closing(self):
 		if messagebox.askokcancel('Quit','Warning: By closing this screen, you can not do further processing.!'):
 			self.root.destroy()
@@ -152,7 +146,7 @@ class Report:
 		elif selected_filter == '365':
 			self.filter365Days()
 		else:
-			print('reset to default all time')
+			self.filterAllTime()
 		
 
 
@@ -362,7 +356,15 @@ class Report:
 		self.root.config(menu=menubar)
 		""" Menu bar closed here """
 
-
+	def DateOrNull(self, date_list, i):
+		orderDate = list('01-10-0001')
+		try:
+			orderDate = date_list[i]
+		except:
+			orderDate = list('01-10-0001')
+		
+		return orderDate
+		
 
 	""" Menu function call inside this function. """
 	def ProcessInput(self):
@@ -376,21 +378,6 @@ class Report:
 		""" Menubar stuff will go here """
 		self.modules_menu()
 
-		def get_current_qty(item_qty_array, i):
-			currentQty = 0
-			try:
-				currentQty = int(item_qty_array[i])
-			except:
-				currentQty = 0
-			return currentQty
-
-		def price_to_float(item_price,i):
-			floatPrice = 0.0
-			try:
-				floatPrice = float(item_price[i][1:])
-			except:
-				floatPrice = 0.0
-			return floatPrice
 
 		item_sku =   columns['LineItem SKU']
 		item_names =   columns['LineItem Name']
@@ -400,143 +387,129 @@ class Report:
 
 		item_dict = {}
 		self.validatedCSV = [item_sku, item_names, item_qty, item_price, item_order_date] 
-
-		for i in range(len(item_sku)):
-			if item_sku[i] in item_dict:
-				alist = item_dict.get(item_sku[i])
-				date_list = []
-				currentQty = get_current_qty(item_qty, i)
-				savedQty = 0
-				try:
-					date_list =  item_order_date[i]
-				except:
-					date_list = list('01-10-0001')
-				
-				try:
-					savedQty = int(alist[1])
-				except:
-					savedQty = 0
-				
-				floatPrice = price_to_float(item_price, i)
-					# item_price = 
-				# print("a list is: ", alist)
-				# print("a list specific: ", alist[0],alist[1],item_qty[i],alist[2],alist[3] )
-				previous_total = alist[4]
-				total = previous_total+(currentQty*floatPrice)
-				avg_price = (total/(savedQty+currentQty))
-				item_dict[item_sku[i]] = [alist[0],savedQty+currentQty, avg_price ,alist[3]+"*"+date_list, total]
-			else:
-				floatPrice = 0.0
-				try:
-					currentQty = get_current_qty(item_qty, i)
-					floatPrice = price_to_float(item_price, i)
-					order_date = '01-10-0001'
-
-					try:
-						order_date = item_order_date[i]
-					except:
-						order_date = '01-10-0001'
-
-					item_dict[item_sku[i]] = [str(""+item_names[i]),currentQty,float(item_price[i]),order_date, (float(currentQty)*floatPrice)]
-				except:
-					# print("one cycle:----------------------------------------------")
-					# print(int(item_qty[i]))
-					# print(float(item_price[i][1:]))
-					# print(item_order_date[i])
-					currentQty = 0
-					floatPrice = price_to_float(item_price, i)
-					order_date = '01-10-0001'
-					try:
-						currentQty = int(item_qty[i])
-					except:
-						currentQty = 0
-
-					try:
-						order_date = item_order_date[i]
-					except:
-						order_date = '01-10-0001'
-					item_dict[item_sku[i]] = [str(""+item_names[i]),currentQty,floatPrice,order_date, (float(currentQty)*floatPrice)]
-					# print([str(""+item_names[i]),int(item_qty[i]),float(item_price[i][1:]),item_order_date[i]])
-
-		self.grid_height = len(item_dict)
+		# print(f'item_sku: {len(item_sku)}, item_name: {len(item_names)},  item_qty: {len(item_qty)},  item_price: {len(item_price)}, item_order_date: {len(item_order_date)}')
+		self.filterAllTime()
+		self.grid_height = 10
+		self.grid_height = self.new_grid_height
 		self.grid_width = 7
-
-		sku_list = []
-		item_list =  []
-		qty_list = []
-		unit_price_list = []
-		sold_lastmonth_list = []
-		total_price_list = []
-
-		proper_dates = self.format_dates(item_dict)
-		timestamps = self.format_dates(item_dict)
-		timestamps.sort()
+		# for i in range(len(item_sku)):
+		# 	if item_sku[i] in item_dict:
 		
-		last_date_from_report =  timestamps[len(timestamps)-1][0]
-		print(f'last date from report: {last_date_from_report}')
-		for l in range(len(proper_dates)):
-			how_many =  self.countdays(proper_dates[l],last_date_from_report)
-			sold_lastmonth_list.append(how_many)
+		# 		currentQty = self.toInt(item_qty[i])
+		# 		date_list =  self.DateOrNull(item_order_date, i)
+		# 		savedQty = self.toInt(item_dict.get(item_sku[i])[1]) 
+		# 		floatPrice =  self.toFloat(item_price[i])
+			
+		# 		previous_total = item_dict.get(item_sku[i])[4]
+		# 		total = previous_total+(currentQty*floatPrice)
+		# 		avg_price = (total/(savedQty+currentQty))
+		# 		item_dict[item_sku[i]] = [item_dict.get(item_sku[i])[0],savedQty+currentQty, avg_price ,item_dict.get(item_sku[i])[3]+"*"+date_list, total]
+		# 	else:
+		# 		floatPrice = 0.0
+		# 		try:
+		# 			floatPrice = self.toFloat(item_price[i])
+		# 			currentQty = self.toInt(item_qty[i])
+		# 			order_date = self.DateOrNull(item_order_date, i)
+		# 			item_dict[item_sku[i]] = [str(""+item_names[i]),currentQty,float(item_price[i]),order_date, (float(currentQty)*floatPrice)]
+		# 		except:
+		# 			floatPrice = self.toFloat(item_price[i])
+		# 			currentQty = self.toInt(item_qty[i])
+		# 			order_date = self.DateOrNull(item_order_date, i)
+					
+		# 			item_dict[item_sku[i]] = [str(""+item_names[i]),currentQty,floatPrice,order_date, (float(currentQty)*floatPrice)]
+		# 			# print([str(""+item_names[i]),int(item_qty[i]),float(item_price[i][1:]),item_order_date[i]])
+
+		# self.grid_height = len(item_dict)
+		# self.grid_height = len(self.all_in_one[0])
+		# self.grid_width = 7
+
+		# sku_list = []
+		# item_list =  []
+		# qty_list = []
+		# unit_price_list = []
+		# sold_lastmonth_list = []
+		# total_price_list = []
+
+		# proper_dates = self.format_dates(item_dict)
+		# timestamps = self.format_dates(item_dict)
+		# timestamps.sort()
+		
+		# last_date_from_report =  timestamps[len(timestamps)-1][0]
+
+
+		# print(f'last date from report: {last_date_from_report}')
+		# for l in range(len(proper_dates)):
+		# 	how_many =  self.countdays(proper_dates[l],last_date_from_report)
+		# 	sold_lastmonth_list.append(how_many)
 		
 		total_units_sold = []
 		total_sales_dollar = []
 		
-		print_value = True
 
-		for key in item_dict.keys():
-			myList = item_dict[key]
-			# if print_value:
-			# 	print(key)
-			# 	print("-------------------")
-			# 	print(myList[4])
-			# 	print_value = False
+		# for key in item_dict.keys():
+		# 	myList = item_dict[key]
 			
-			sku_list.append(key)
-			item_list.append(myList[0])
-			qty_list.append(myList[1])
-			unit_price_list.append(myList[2])
-			total_price_list.append(myList[4])
+		# 	sku_list.append(key)
+		# 	item_list.append(myList[0])
+		# 	qty_list.append(myList[1])
+		# 	unit_price_list.append(myList[2])
+		# 	total_price_list.append(myList[4])
 			
-			
-			# print(f'Quantity: {myList[1]}, Unit price: {myList[2]}')
-		# print(total_price_list)
-		for total in qty_list:
-			total_units_sold.append(total)
+		
+		# for total in qty_list:
+		# 	total_units_sold.append(total)
 
 		entryList = []
 		
 		temp_list = []
 		self.all_in_one =[]
-		all_in_one_qty = []
-		all_in_one_dollar = []
-		all_in_one_lastmonth_qty = []
-		all_in_one_lastmonth_dollar = []
+		# all_in_one_qty = []
+		# all_in_one_dollar = []
+		# all_in_one_lastmonth_qty = []
+		# all_in_one_lastmonth_dollar = []
 
-		for i in range(self.grid_height):
-			#print(item_list[i],qty_list[i],unit_price_list[i],float(qty_list[i])*float(unit_price_list[i]))
-			temp_list = [sku_list[i],item_list[i],int(qty_list[i]),float(unit_price_list[i]),total_price_list[i],sold_lastmonth_list[i],(int(sold_lastmonth_list[i])*float(unit_price_list[i]))]
-			self.all_in_one.append(temp_list)
+		# for i in range(self.grid_height):
+		# 	#print(item_list[i],qty_list[i],unit_price_list[i],float(qty_list[i])*float(unit_price_list[i]))
+		# 	temp_list = [sku_list[i],item_list[i],int(qty_list[i]),float(unit_price_list[i]),total_price_list[i],sold_lastmonth_list[i],(int(sold_lastmonth_list[i])*float(unit_price_list[i]))]
+		# 	self.all_in_one.append(temp_list)
 
 		self.columnHeadings()
+		self.filterAllTime()
+		
 		initial_all_in_one = self.all_in_one
 		self.displayGrid(initial_all_in_one)
+		# self.grid_height = len(item_dict)
+		
 		
 			# after table to view the end buttons
 		self.bottomCanvas = tk.Canvas(root, width=self.screen_width, height=250)
 		self.bottomCanvas.config(bg='#5DADE2')
 		self.bottomCanvas.pack()
 
-		for i in range(len(self.all_in_one)):
-			total_sales_dollar.append(int(self.all_in_one[i][2])*float(self.all_in_one[i][3]))
 		self.final_total_units = 0
 		self.final_total_dollar = 0
-		for i in total_units_sold:
-			self.final_total_units =  self.final_total_units+i
-		for j in total_sales_dollar:
-			self.final_total_dollar = self.final_total_dollar +j
+		self.final_total_unique_names = 0
+		for i in range(len(self.all_in_one)):
+			self.final_total_units += self.all_in_one[i][2]
+			self.final_total_dollar += self.all_in_one[i][4]
+		# 	# total_sales_dollar.append(int(self.all_in_one[i][2])*float(self.all_in_one[i][3]))
+		# 	total_sales_dollar+= self.all_in_one[i][4]
+		# 	total_units_sold += self.all_in_one[i][2]
+		self.final_total_unique_names = len(self.all_in_one)
+
+		# self.final_total_units = 0
+		# self.final_total_dollar = 0
+
+		# self.final_total_units = self.all_in_one
+		# self.final_total_dollar = 0
+		# for i in total_units_sold:
+		# 	# self.final_total_units =  self.final_total_units+i
+		# for j in total_sales_dollar:
+		# 	self.final_total_dollar = self.final_total_dollar +j
 
 		self.bottomButtons()
-		self.displayGrid(initial_all_in_one)
+		# self.displayGrid(initial_all_in_one)
+		self.displayGrid(self.all_in_one) #this is new not tested
 		# 5 and 6, 5 for lastmonth Qty
 
 		# self.search()
@@ -652,6 +625,7 @@ class Report:
 
 		dollar_sign = "$"
 		self.bottomCanvas.create_text(150,30,fill="darkblue",font="Times 17 italic",text="Total units sold: "+str(self.final_total_units)+"   ")
+		self.bottomCanvas.create_text(150,75,fill="darkblue",font="Times 17 italic",text="Total unique names: "+str(self.final_total_unique_names)+"   ")
 		self.bottomCanvas.create_text(150,50,fill="darkblue",font="Times 17 italic",text="    Total sales dollar: %s %0.2f"%(dollar_sign,float(self.final_total_dollar)))
 		
 		
@@ -728,7 +702,15 @@ class Report:
 		self.all_in_one= sorted(temp_all_in_one, reverse=True, key=lambda x:x[4])	
 		self.displayGrid(self.all_in_one)
 
+	
+	def isInLastMonth(self, lastDate, currentDate):
+		breakDate = lastDate-timedelta(days=30)
+		if breakDate <= currentDate <= lastDate:
+			return True
+		return False
+
 	def return_filtered_column(self, days):
+		print(f'received filter request days: {days}')
 		raw_columns = self.validatedCSV
 		item_sku =   raw_columns[0]
 		item_names =   raw_columns[1]
@@ -736,49 +718,105 @@ class Report:
 		item_price =   raw_columns[3]
 		item_order_date = raw_columns[4]
 
-		filter_sku =   []
-		filter_names =   []
-		filter_qty   =   []
-		filter_price =   []
+		filter_sku, filter_names, filter_qty, filter_price, month_qty, month_price = [],[],[],[],[],[]
 
 		formatted_dates = [] 
 		for raw_date in item_order_date:
 			formatted_dates.append(self.guessDate(raw_date))
-		
+	
 		formatted_dates.sort()
-		last_sale_date = formatted_dates[len(formatted_dates)-1]
-		break_date = last_sale_date+timedelta(days=days)
-
+		last_sale_date = formatted_dates[len(formatted_dates)-1]	
+		break_date = formatted_dates[0] if days == 'alltime' else last_sale_date-timedelta(days=days)
+		
 		for sku,name,qty,price, fdate in zip(item_sku, item_names, item_qty, item_price, formatted_dates):
-			if  last_sale_date <= fdate <=break_date:
+			if  break_date < fdate < last_sale_date:
 				filter_sku.append(sku)
 				filter_names.append(name)
 				filter_qty.append(qty)
 				filter_price.append(price)
+				if self.isInLastMonth(last_sale_date,fdate):
+					month_qty.append(qty)
+					month_price.append(price)
+				else:
+					month_qty.append(0)
+					month_price.append(0)
 
-		return [filter_sku, filter_names, filter_qty, filter_price]
+		return [filter_sku, filter_names, filter_qty, filter_price, month_qty, month_price]
 
-	def filter30Days(self):
-		print('only 30 days')
-		filtered_list = self.return_filtered_column(30)
+	def toFloat(self, arg):
+		floatvalue = 0.0
+		try:
+			floatvalue = float(arg)
+		except:
+			try:
+				floatvalue =  float(str(arg[1:]))
+			except ValueError:
+				floatvalue =  float(0.0)
+		return floatvalue
+
+	def toInt(self, arg):
+		intValue = 0
+		try:
+			intValue = int(arg)
+		except:
+			intValue = 0
+		
+		return intValue
+
+	def process_filtered(self, days):
+		filtered_list = self.return_filtered_column(days)
 		skus = filtered_list[0]
 		names = filtered_list[1]
 		qtys = filtered_list[2]
 		prices = filtered_list[3]
+		lqtys = filtered_list[4]
+		lprices = filtered_list[5]
 
-		processed_sku = []
-		processed_names = []
-		processed_qtys = []
-		processed_prices = []
+		processed_dict = {}
+		for sku, name, qty, price, lqty, lprice in zip(skus, names, qtys, prices,lqtys, lprices):
+			if sku in processed_dict:
+				nQty = self.toInt(processed_dict[sku][2])+self.toInt(qty)
+				nPrice = self.toFloat(processed_dict[sku][4])+self.toFloat(price)
+				nlQty = self.toInt(processed_dict[sku][5])+self.toInt(lqty) 
+				nlPrice = self.toFloat(processed_dict[sku][6])+self.toFloat(lprice)
+				processed_dict[sku] = [sku, name, nQty, price, nPrice, nlQty, nlPrice]
+			else:
+				processed_dict[sku] = [sku, name, self.toInt(qty), self.toFloat(price), self.toFloat(price), self.toInt(lqty), self.toFloat(lprice)]
+						# sku     , name       , qty     , unit_price, price, lqty, lprice       
+		# temp_list = [sku_list[i],item_list[i],int(qty_list[i]),float(unit_price_list[i]),total_price_list[i],sold_lastmonth_list[i],(int(sold_lastmonth_list[i])*float(unit_price_list[i]))]		
+		self.new_grid_height = len(processed_dict)
+		self.grid_height = len(processed_dict)
+		self.grid_width = 7
+		all_list = []
+		for key, value in processed_dict.items():
+			# print(f'sku: {value[0]}, qty: {value[1]}, price: {value[2]}, lqty: {value[3]}, lprice: {value[4]}')			
+			all_list.append([value[0], value[1], value[2], self.toFloat(value[3]), value[4], value[5], value[6]])
+		self.all_in_one = all_list
+		self.displayGrid(self.all_in_one)
+		# sortedList = sorted(all_list, reverse=True, key=lambda x:x[2])
+		# for value in sortedList:
+			# print(f'prices: {value[5]}')
+			# print('----------------')
+			# print(f'sku: {value[0]}, qty: {value[1]}, price: {value[2]}, lqty: {value[3]}, lprice: {value[4]}')			
+			# print(f'sku: {value[0]}, qty: {value[2]}, uprice: {value[3]}, tprice: {value[4]}, lqty: {value[5]}, lprice: {value[6]}')			
+			#				sku				qty				unit_price			total_price			lqty					lprice
+
+	def filter30Days(self):
+		print('only 30 days')
+		self.process_filtered(30)
 		
-
-	
 	def filter90Days(self):
 		print('only 90 days')
+		self.process_filtered(90)
 		
 
 	def filter365Days(self):
 		print('only 365 days')
+		self.process_filtered(365)
+	
+	def filterAllTime(self):
+		print('all time')
+		self.process_filtered('alltime')
 		
 
 

@@ -48,7 +48,8 @@ class discount_detail:
 	def process_data(self):
 		detail_dict  = defaultdict(list)
 		name_detail_dict =  defaultdict(list)
-		all_detail_dict = defaultdict(list)
+		# all_detail_dict = defaultdict(list)
+		all_detail_dict = {}
 		check_temp_list = []
 		item_sku =  utils.raw_column_list['LineItem SKU']
 		item_name = utils.raw_column_list['LineItem Name']
@@ -67,23 +68,27 @@ class discount_detail:
 				if len(coupon_code[i]) > 2:
 					temp_list = all_detail_dict[coupon_code_name[i]]
 					customer_name_list = temp_list[0]
-					customer_name_list.append(customer_name[i])
-					purchase_date_list = temp_list[1]
-					purchase_date_list.append(purchase_date[i])
-					discount_list = temp_list[2]
-
-					discount_total = 0
-					try:
-						discount_total = discount_dollar[i]
-						discount_total = float(discount_total)
-					except:
-						discount_total = discount_dollar[i][1:]
-					finally:
-						discount_total =  discount_dollar[i][2:(len(purchase_dollar[i])-2)]
-
-					discount_total = float(discount_total)
+					if customer_name[i] not in customer_name_list:
+						customer_name_list.append(customer_name[i])
 					
-					discount_list.append(discount_total)
+					
+					# if purchase_date_list[i] not in purchase_date_list:
+						purchase_date_list = temp_list[1]
+						purchase_date_list.append(purchase_date[i])
+						discount_list = temp_list[2]
+
+						discount_total = 0
+						try:
+							discount_total = discount_dollar[i]
+							discount_total = float(discount_total)
+						except:
+							discount_total = discount_dollar[i][1:]
+						finally:
+							discount_total =  discount_dollar[i][2:(len(purchase_dollar[i])-2)]
+
+						discount_total = float(discount_total)
+						
+						discount_list.append(discount_total)
 
 					all_detail_dict[coupon_code_name[i]] = ([customer_name_list, purchase_date_list, discount_list])
 
@@ -113,11 +118,12 @@ class discount_detail:
 		self.processed_DISCOUNT_DETAIL = all_detail_dict
 		
 		# for key, value  in all_detail_dict.items():
-		# 	if key == 'MDL-195-FAT-BOY':
-		# 		print("key: "+str(key))
-		# 		print(str(key)+" : "+str(value))
-		# 		print(' ')
-		# 		print(' ')
+		# 	print(f'name: {value[0]}, date used: {value[1]}, discount: {value[2]}')
+			# if key == 'MDL-195-FAT-BOY':
+			# 	print("key: "+str(key))
+			# 	print(str(key)+" : "+str(value))
+			# 	print(' ')
+			# 	print(' ')
 		
 	def main_display(self):
 		
